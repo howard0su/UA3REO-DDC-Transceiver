@@ -29,6 +29,10 @@
 #include "wifi.h"
 #include "wspr.h"
 
+#ifndef POWER_OFF_STATE
+#define POWER_OFF_STATE GPIO_PIN_RESET
+#endif
+
 void EVENTS_do_WSPR(void) // 1,4648 hz
 {
 	if (SYSMENU_wspr_opened)
@@ -176,19 +180,19 @@ void EVENTS_do_PREPROCESS(void) // 1000 hz
 void EVENTS_do_EVERY_10ms(void) // 100 hz
 {
 	static uint32_t powerdown_start_delay = 0;
-	static bool prev_pwr_state = true;
+	static GPIO_PinState prev_pwr_state = !POWER_OFF_STATE;
 	static uint32_t ms10_10_counter = 0;
 	static uint32_t ms10_30_counter = 0;
 	ms10_10_counter++;
 	ms10_30_counter++;
 
 	// power off sequence
-	if (prev_pwr_state == true && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) {
+	if (prev_pwr_state == !POWER_OFF_STATE && HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == POWER_OFF_STATE) {
 		powerdown_start_delay = HAL_GetTick();
 	}
 	prev_pwr_state = HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin);
 
-	if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) &&
+	if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == POWER_OFF_STATE) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) &&
 	    ((!NeedSaveCalibration && !NeedSaveWiFi && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) ||
 	     ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT))) {
 		TRX_Inited = false;
@@ -201,10 +205,11 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 		SaveSettings();
 		SaveSettingsToEEPROM();
 		print_flush();
-		while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) {
+		while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == POWER_OFF_STATE) {
 		}
 		HAL_Delay(500);
 		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(LCD_EN_GPIO_Port, LCD_EN_Pin, GPIO_PIN_RESET);
 		// SCB->AIRCR = 0x05FA0004; // software reset
 		while (true) {
 		}
