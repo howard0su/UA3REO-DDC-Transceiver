@@ -23,6 +23,9 @@
 #if (defined(LCD_RA8875))
 #include "lcd_driver_RA8875.h"
 #endif
+#if (defined(LCD_HX8369A))
+#include "lcd_driver_HX8369A.h"
+#endif
 #if (defined(LCD_NONE))
 #include "lcd_driver_NONE.h"
 #endif

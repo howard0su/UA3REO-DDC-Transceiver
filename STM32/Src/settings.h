@@ -238,6 +238,12 @@ static char ota_config_lcd[] = "RA8875";
 #define FT8_SUPPORT true
 #endif
 #endif
+#if defined(LCD_HX8369A)
+static char ota_config_lcd[] = "HX8369A";
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
+#endif
 #if defined(LCD_NONE)
 static char ota_config_lcd[] = "NONE";
 #ifdef STM32H743xx
