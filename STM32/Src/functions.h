@@ -24,6 +24,18 @@ __asm(".global __use_no_heap\n\t");
 #define SRAM_ON_H743 SRAM
 #endif
 
+#ifdef STM32H7B0xx
+#define ITCM
+#define IRAM2
+#define SRAM
+#define SRAM4
+#define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
+#define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
+
+#define SRAM_ON_F407
+#define SRAM_ON_H743 SRAM
+#endif
+
 #ifdef STM32F407xx
 #define IRAM1 __attribute__((section(".IRAM1"))) __attribute__((aligned(32))) // 64kb CCM IRAM1
 #define IRAM2 __attribute__((section(".IRAM2"))) __attribute__((aligned(32))) // 128kb IRAM2
@@ -76,8 +88,10 @@ __asm(".global __use_no_heap\n\t");
 #define Aligned_CleanInvalidateDCache_by_Addr(buff, size) \
 	(SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t)buff) & ~(uint32_t)0x1F), (size) + 32))
 
+#ifndef __GNUC__
 #define isnanf __ARM_isnanf
 #define isinff __ARM_isinff
+#endif
 
 #define F_PI 3.141592653589793238463f
 #define F_2PI (3.141592653589793238463f * 2.0f)
