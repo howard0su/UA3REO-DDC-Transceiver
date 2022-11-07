@@ -208,8 +208,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 		while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == POWER_OFF_STATE) {
 		}
 		HAL_Delay(500);
-		HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(LCD_EN_GPIO_Port, LCD_EN_Pin, GPIO_PIN_RESET);
+		HRDW_Shutdown();
 		// SCB->AIRCR = 0x05FA0004; // software reset
 		while (true) {
 		}
