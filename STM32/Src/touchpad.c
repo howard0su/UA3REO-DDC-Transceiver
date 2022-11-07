@@ -29,13 +29,21 @@ void TOUCHPAD_Init(void) {
 	uint8_t send = 3;
 	GT911_WR_Reg(0x8040, (uint8_t *)&send, 1); // Reference capacitance update (Internal test);
 #endif
+#if (defined(TOUCHPAD_XPT2046))
+	XPT2046_Init();
+#endif
 }
 
 void TOUCHPAD_ProcessInterrupt(void) {
-#if (defined(TOUCHPAD_GT911))
 	if (LCD_busy)
 		return;
+#if (defined(TOUCHPAD_GT911))
 	GT911_Scan();
+#endif
+
+#if (defined(TOUCHPAD_XPT2046))
+	XPT2046_Scan();
+#endif
 
 	if (touched && !hold_swipe_handled && (touch_lasttime < (HAL_GetTick() - TOUCHPAD_TIMEOUT)) &&
 	    ((touch_lasttime - touch_startime) <= TOUCHPAD_CLICK_TIMEOUT) && ((touch_lasttime - touch_startime) >= TOUCHPAD_CLICK_THRESHOLD)) {
@@ -84,12 +92,14 @@ void TOUCHPAD_ProcessInterrupt(void) {
 		hold_touch_handled = false;
 		hold_swipe_handled = false;
 	}
-#endif
 }
 
 void TOUCHPAD_reserveInterrupt(void) {
 #if (defined(TOUCHPAD_GT911))
 	GT911.Touch = 1;
+#endif
+#if (defined(TOUCHPAD_XPT2046))
+	XPT2046.Touch = 1;
 #endif
 }
 

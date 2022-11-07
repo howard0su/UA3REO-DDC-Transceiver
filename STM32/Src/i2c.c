@@ -19,7 +19,7 @@ I2C_DEVICE I2C_CODEC = {
     .i2c_tx_buf_overflow = false,
 };
 
-#ifdef HAS_TOUCHPAD
+#ifdef TOUCHPAD_GT911
 I2C_DEVICE I2C_TOUCHPAD = {
     .SDA_PORT = AD2_CS_GPIO_Port,
     .SDA_PIN = AD2_CS_Pin,

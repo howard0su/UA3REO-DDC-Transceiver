@@ -6,6 +6,9 @@
 #if (defined(TOUCHPAD_GT911))
 #include "touchpad_GT911.h"
 #endif
+#if (defined(TOUCHPAD_XPT2046))
+#include "touchpad_XPT2046.h"
+#endif
 
 #define TOUCHPAD_TIMEOUT 70
 #define TOUCHPAD_CLICK_THRESHOLD 10
