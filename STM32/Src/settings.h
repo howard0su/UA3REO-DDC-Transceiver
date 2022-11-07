@@ -111,9 +111,9 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 // FRONT PANELS
 #ifdef FRONTPANEL_NONE
 #define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT 1
-#define FUNCBUTTONS_ON_PAGE 1
-#define FUNCBUTTONS_PAGES 1
+#define FUNCBUTTONS_COUNT 40
+#define FUNCBUTTONS_ON_PAGE 8
+#define FUNCBUTTONS_PAGES 5
 static char ota_config_frontpanel[] = "NONE";
 #endif
 
