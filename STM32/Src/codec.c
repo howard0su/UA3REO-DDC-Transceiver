@@ -126,7 +126,7 @@ static void I2S_DMARxHalfCplt(DMA_HandleTypeDef *hdma) {
 static void I2S_DMAError(DMA_HandleTypeDef *hdma) {
 	CPULOAD_WakeUp();
 
-#ifdef STM32H743xx
+#if defined(STM32H743xx) || defined(STM32H7B0xx)
 	I2S_HandleTypeDef *hi2s = (I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent; /* Derogation MISRAC2012-Rule-11.5 */
 
 	/* Disable Rx and Tx DMA Request */
@@ -163,7 +163,7 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma) {
 
 // Full-duplex implementation of I2S startup
 static HAL_StatusTypeDef HAL_I2S_TXRX_DMA(I2S_HandleTypeDef *hi2s, uint16_t *txData, uint16_t *rxData, uint16_t txSize, uint16_t rxSize) {
-#ifdef STM32H743xx
+#if defined(STM32H743xx) || defined(STM32H7B0xx)
 	if ((rxData == NULL) || (txData == NULL) || (rxSize == 0UL) || (txSize == 0UL)) {
 		return HAL_ERROR;
 	}

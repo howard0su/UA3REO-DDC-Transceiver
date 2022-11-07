@@ -11,6 +11,9 @@
 #ifdef STM32H743xx
 #define DEBUG_TX_FIFO_BUFFER_SIZE 4096
 #endif
+#ifdef STM32H7B0xx
+#define DEBUG_TX_FIFO_BUFFER_SIZE 4096
+#endif
 #ifdef STM32F407xx
 #define DEBUG_TX_FIFO_BUFFER_SIZE 256
 #endif

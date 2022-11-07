@@ -393,7 +393,7 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	if (count < 100)
 		dma = false;
 
-#ifdef STM32H743xx
+#if defined(STM32H743xx) || defined(STM32H7B0xx)
 	// non-DMA section
 	if (dma && out_data == NULL && (uint32_t)in_data < 0x24000000)
 		dma = false;

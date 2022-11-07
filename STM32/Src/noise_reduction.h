@@ -12,6 +12,11 @@
 #define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len512 // FFT instance
 #endif
 
+#ifdef STM32H7B0xx
+#define NOISE_REDUCTION_FFT_SIZE 512                         // FFT size for processing in DNR
+#define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len512 // FFT instance
+#endif
+
 #ifdef STM32F407xx
 #define NOISE_REDUCTION_FFT_SIZE 256                         // FFT size for processing in DNR
 #define NOISE_REDUCTION_FFT_INSTANCE &arm_cfft_sR_f32_len256 // FFT instance

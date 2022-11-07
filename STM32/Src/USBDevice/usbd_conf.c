@@ -264,7 +264,11 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev) {
 		hpcd_USB_OTG_FS.pData = pdev;
 		pdev->pData = &hpcd_USB_OTG_FS;
 
+#ifdef STM32H7B0xx
+		hpcd_USB_OTG_FS.Instance = USB_OTG_HS;
+#else
 		hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
+#endif
 		hpcd_USB_OTG_FS.Init.dev_endpoints = 9;
 		hpcd_USB_OTG_FS.Init.speed = PCD_SPEED_FULL;
 		hpcd_USB_OTG_FS.Init.dma_enable = DISABLE;
@@ -295,7 +299,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev) {
 		HAL_PCD_RegisterIsoInIncpltCallback(&hpcd_USB_OTG_FS, PCD_ISOINIncompleteCallback);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 /* USER CODE BEGIN TxRx_Configuration */
-#ifdef STM32H743xx
+#if defined(STM32H743xx) || defined(STM32H7B0xx)
 		// STM32H7 FIFO size 1536 bytes
 		HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, AUDIO_OUT_PACKET);                          // All RX (288 USB RX read)
 		HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x40);                                   // EP0 64bytes

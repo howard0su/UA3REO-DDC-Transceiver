@@ -6,7 +6,7 @@
 
 // switch to DFU-mode buloder
 _Noreturn void JumpToBootloader(void) {
-#ifdef STM32H743xx
+#if defined(STM32H743xx) || defined(STM32H7B0xx)
 	uint32_t i = 0;
 	void (*SysMemBootJump)(void);
 
