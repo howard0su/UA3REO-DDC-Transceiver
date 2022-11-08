@@ -386,22 +386,9 @@ void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
 		return;
 	}
 
-#if 0
-    // DMA2D Set color in 32bit format
-    WRITE_REG(hdma2d.Instance->OCOLR, (color << 16) | color);
-    // DMA2D Set width and 32bit align
-    uint32_t w = x1 - x0 + 1;
-    if (w & 0x1)
-        MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL | DMA2D_NLR_PL), ((y1 - y0 + 1) | ((w + 1) << DMA2D_NLR_PL_Pos)));
-    else
-        MODIFY_REG(hdma2d.Instance->NLR, (DMA2D_NLR_NL | DMA2D_NLR_PL), ((y1 - y0 + 1) | (w << DMA2D_NLR_PL_Pos)));
-    // DMA2D Start
-    hdma2d.Instance->CR |= DMA2D_CR_START;
-    // DMA2D Polling
-    while ((hdma2d.Instance->ISR & DMA2D_FLAG_TC) == 0U)
-        CPULOAD_GoToSleepMode();
-    // DMA2D clean flags
-    hdma2d.Instance->IFCR = DMA2D_FLAG_TC | DMA2D_FLAG_CTC;
+#if HRDW_LCD2D_MDMA
+    HAL_DMA_Start_IT(&HRDW_LCD2D_MDMA, color, LCD_FSMC_DATA_ADDR, n);
+    SLEEPING_DMA_PollForTransfer(&HRDW_LCD2D_MDMA);
 #else
 	while (n--)
 		LCDDriver_SendData(color);
