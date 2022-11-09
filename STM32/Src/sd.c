@@ -407,6 +407,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void) {
 }
 
 void SDCOMM_FLASH_BIN_handler(void) {
+#if 0
 	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
@@ -563,9 +564,11 @@ void SDCOMM_FLASH_BIN_handler(void) {
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
+#endif
 }
 
 void SDCOMM_FLASH_JIC_handler(bool restart) {
+#if 0
 	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
@@ -637,6 +640,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart) {
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
+#endif
 }
 
 static bool SDCOMM_OPEN_PLAY_FILE_handler(void) {
