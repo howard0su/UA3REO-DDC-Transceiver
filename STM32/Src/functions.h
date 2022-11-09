@@ -25,10 +25,10 @@ __asm(".global __use_no_heap\n\t");
 #endif
 
 #ifdef STM32H7B0xx
-#define ITCM
-#define IRAM2
-#define SRAM
-#define SRAM4
+#define ITCM __attribute__((aligned(32)))   // 64kb ITCM
+#define IRAM2  __attribute__((aligned(32)))  // 512kb AXI SRAM
+#define SRAM __attribute__((aligned(32)))   // SRAM1+SRAM2+SRAM3 128kb+128kb+32kb
+#define SRAM4 __attribute__((aligned(32))) // SRAM4 64kb
 #define BACKUP_SRAM_BANK1_ADDR (uint32_t *)0x38800000
 #define BACKUP_SRAM_BANK2_ADDR (uint32_t *)0x38800800
 
