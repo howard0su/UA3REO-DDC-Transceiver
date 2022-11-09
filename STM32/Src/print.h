@@ -3,19 +3,28 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define __print_array(T, qual, color)                     \
-	int max_len = 16;                                       \
-	int n = size / sizeof(T);                               \
-	T *m = va_arg(v, T *);                                  \
-	printf("[");                                            \
-	for (int i = 0; i < (n < max_len ? n : max_len); i++) { \
-		if (i > 0)                                            \
-			printf(" ");                                        \
-		printf(qual, m[i]);                                   \
-	}                                                       \
-	if (n > max_len)                                        \
-		printf("...");                                        \
-	printf("]");
+#define BUF_SIZE 125
+
+extern void write_str(const char *buffer);
+
+#define __print_array(T, qual, color)     \
+	int index = 0;                          \
+	int n = size / sizeof(T);               \
+	T *m = va_arg(v, T *);                  \
+	buffer[index++] = '[';                  \
+	for (int i = 0; i < n; i++) {           \
+		if (i > 0)                            \
+			buffer[index++] = ' ';              \
+		index += sprintf(buffer, qual, m[i]); \
+		if (index > BUF_SIZE - 5) {                    \
+			buffer[index++] = '.';              \
+			buffer[index++] = '.';              \
+			buffer[index++] = '.';              \
+			break;                              \
+		}                                     \
+	}                                       \
+	buffer[index++] = ']';                  \
+	buffer[index] = '\0'
 
 static int __print_color_normal = -1; // -1 means default terminal foreground color
 static int __print_color_number = 4;
@@ -34,44 +43,34 @@ static void __print_setup_colors(int normal, int number, int string, int hex, in
 static void __print_func(int count, unsigned short types[], ...) {
 	va_list v;
 	va_start(v, types);
-#ifdef __print_DEBUG
-	fprintf("args[%i]: ", count);
-	for (int i = 0; i < count; i++) {
-		char type = types[i] & 0x1F;
-		char size = types[i] >> 5;
-		if (i > 0)
-			fprintf(" ");
-		fprintf("%i[%i]", type, size);
-	}
-	fprintf("\n");
-#endif // __print_DEBUG
+	char buffer[BUF_SIZE];
 
 	for (int i = 0; i < count; i++) {
 		char type = types[i] & 0x1F;
 		char size = types[i] >> 5;
 		if (type == 1) {
 			double d = va_arg(v, double);
-			printf("%f", d);
+			sprintf(buffer, "%f", d);
 		} else if (type == 2) {
 			char c = va_arg(v, int);
-			printf("%c", c);
+			sprintf(buffer, "%c", c);
 		} else if (type == 3) {
 			char c = va_arg(v, int);
-			printf("%u", (unsigned char)c);
+			sprintf(buffer, "%u", (unsigned char)c);
 		} else if (type == 4) {
-			printf("%d", va_arg(v, int));
+			sprintf(buffer, "%d", va_arg(v, int));
 		} else if (type == 5) {
-			printf("%u", va_arg(v, unsigned int));
+			sprintf(buffer, "%u", va_arg(v, unsigned int));
 		} else if (type == 6) {
-			printf("%lu", va_arg(v, unsigned long));
+			sprintf(buffer, "%lu", va_arg(v, unsigned long));
 		} else if (type == 7) {
-			printf("%ld", va_arg(v, long));
+			sprintf(buffer, "%ld", va_arg(v, long));
 		} else if (type == 8) {
-			printf("%s", va_arg(v, char *));
+			sprintf(buffer, "%s", va_arg(v, char *));
 		} else if (type == 9) {
-			printf("%s", va_arg(v, char *));
+			sprintf(buffer, "%s", va_arg(v, char *));
 		} else if (type == 10) {
-			printf("%p", va_arg(v, void *));
+			sprintf(buffer, "%p", va_arg(v, void *));
 		} else if (type == 11) {
 			__print_array(int, "%i", __print_color_number);
 		} else if (type == 12) {
@@ -83,13 +82,15 @@ static void __print_func(int count, unsigned short types[], ...) {
 		} else if (type == 15) {
 			__print_array(char *, "%s", __print_color_string);
 		} else if (type == 16) {
-			printf("%llu", va_arg(v, unsigned long long));
+			sprintf(buffer, "%llu", va_arg(v, unsigned long long));
 		} else if (type == 17) {
-			printf("%lld", va_arg(v, signed long long));
+			sprintf(buffer, "%lld", va_arg(v, signed long long));
 		} else {
-			printf("print: unsupported type %i (of size %i)\n", type, size);
+			sprintf(buffer, "print: unsupported type %i (of size %i)\n", type, size);
 			break;
 		}
+
+		write_str(buffer);
 	}
 	va_end(v);
 }
